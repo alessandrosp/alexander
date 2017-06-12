@@ -27,9 +27,7 @@ rf_pipeline.fit(df)  # Note how the pipeline is trained on the whole dataset
 
 X_all = df.loc[:, df.columns != 'Survived']
 y_all = df.loc[:, ['Survived']]
-X_train, X_test, y_train, y_test = (sklearn
-									.model_selection
-									.train_test_split(X_all, y_all, test_size=0.2))
+X_train, X_test, y_train, y_test = sklearn.model_selection.train_test_split(X_all, y_all, test_size=0.2))
 
 rf_train = rf_pipeline.transform(X_train)
 rf_clf = sklearn.ensemble.RandomForestClassifier(max_features=None)
