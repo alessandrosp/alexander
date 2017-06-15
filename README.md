@@ -30,8 +30,9 @@ y_all = df.loc[:, ['Survived']]
 X_train, X_test, y_train, y_test = sklearn.model_selection.train_test_split(X_all, y_all, test_size=0.2))
 
 rf_train = rf_pipeline.transform(X_train)
-rf_clf = sklearn.ensemble.RandomForestClassifier(max_features=None)
+rf_clf = alexander.ensemble.RandomForestClassifier(max_features=None)
 rf_clf.fit(rf_train, y_train)  # The model is ready to be used!
+print(RandomForestClassifier.feature_importances)
 
 ```
 
@@ -44,3 +45,4 @@ The following sklearn classes have been either wrapped or replace:
 - MissingValuesFiller, newly created, it replaces Imputer
 - OneHotEncoder, wrapped
 - Pipeline, replaced by class with the same name
+- RandomForestClassifier, wrapped
