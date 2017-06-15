@@ -1,17 +1,17 @@
 # Alexander
-Alexander is a Python wrapper that aims to make scikit-learn fully compatible with pandas.
+**Alexander** is a Python wrapper that aims to make [**scikit-learn**](http://scikit-learn.org/) fully compatible with [**pandas**](http://pandas.pydata.org/pandas-docs/stable/index.html).
 
 # Example
-Alexander mirrors sklearn's API and structure. Most classes are either estimators (they have a .fit(), .predict() and .fit_predict() methods) or transformers (they have a .fit(), .transform() and .fit_transform() methods). Transformers takes pd.DataFrame as input and returns pd.DataFrame, and are expected to be concatenated into a pipelines.
+Alexander mirrors sklearn's API and structure. Most classes are either estimators (they have `fit`, `predict` and `fit_predict` methods) or transformers (they have a `fit`, `transform` and `fit_transform` methods). Transformers takes pd.DataFrame as input and returns pd.DataFrame as output, and are expected to be concatenated into a pipelines.
 
 ```python
 
+import alexander.ensemble
 import alexander.pipeline
 import alexander.preprocessing
 import pandas as pd
-import sklearn.ensemble
 
-df = pd.read_csv('train.csv')
+df = pd.read_csv('train.csv')  # We load the Titanic dataset
 df = df.set_index('PassengerId')
 
 rf_pipeline = alexander.pipeline.Pipeline([
@@ -37,7 +37,7 @@ print(RandomForestClassifier.feature_importances)
 ```
 
 # What have been done so far
-The following sklearn classes have been either wrapped or replace:
+The following scikit-learn classes have been either wrapped or replaced:
 
 - FeaturesEncoder, newly created, same as LabelEncoder
 - Imputer, replaced by MissingValuesFiller
