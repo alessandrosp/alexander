@@ -7,7 +7,7 @@ class RandomForestClassifier(sklearn.ensemble.RandomForestClassifier):
 
     Parameters
     ----------
-    None
+    Same as sklearn.ensemble.RandomForestClassifier()
 
     Attributes
     ----------
@@ -21,8 +21,25 @@ class RandomForestClassifier(sklearn.ensemble.RandomForestClassifier):
         importance for the classifier
     """
 
-    def __init__(self):
-        self.estimator = sklearn.ensemble.RandomForestClassifier()
+    def __init__(self, *args, **kwargs):
+        super(RandomForestClassifier, self).__init__(*args, **kwargs)
+        self.estimator = sklearn.ensemble.RandomForestClassifier(
+            n_estimators=self.n_estimators,
+            criterion=self.criterion,
+            max_depth=self.max_depth,
+            min_samples_split=self.min_samples_split,
+            min_samples_leaf=self.min_samples_leaf,
+            min_weight_fraction_leaf=self.min_weight_fraction_leaf,
+            max_features=self.max_features,
+            max_leaf_nodes=self.max_leaf_nodes,
+            min_impurity_split=self.min_impurity_split,
+            bootstrap=self.bootstrap,
+            oob_score=self.oob_score,
+            n_jobs=self.n_jobs,
+            random_state=self.random_state,
+            verbose=self.verbose,
+            warm_start=self.warm_start,
+            class_weight=self.class_weight)
         self.features = []
         self.feature_importances = []
 
