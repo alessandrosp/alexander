@@ -1,0 +1,1 @@
+from .code import load_titanic
