@@ -1,6 +1,4 @@
-import copy
 import collections
-import math
 
 import numpy as np
 import pandas as pd
@@ -47,7 +45,7 @@ class LabelEncoder(sklearn.preprocessing.LabelEncoder):
         self
         """
         if isinstance(X, pd.DataFrame):
-            cX = copy.deepcopy(X)
+            cX = X.copy()
         elif isinstance(X, pd.Series):
             cX = pd.DataFrame(X)
         for column in cX.columns:
@@ -69,7 +67,7 @@ class LabelEncoder(sklearn.preprocessing.LabelEncoder):
             Same as X but with processed data.
         """
         if isinstance(X, pd.DataFrame):
-            cX = copy.deepcopy(X)
+            cX = X.copy()
         elif isinstance(X, pd.Series):
             cX = pd.DataFrame(X)
         for column in cX.columns:
@@ -136,7 +134,7 @@ class OneHotEncoder(sklearn.preprocessing.OneHotEncoder):
         self
         """
         if isinstance(X, pd.DataFrame):
-            cX = copy.deepcopy(X)
+            cX = X.copy()
         elif isinstance(X, pd.Series):
             cX = pd.DataFrame(X)
         for column in cX.columns:
