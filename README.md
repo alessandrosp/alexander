@@ -36,6 +36,14 @@ print(RandomForestClassifier.feature_importances)
 
 ```
 
+Alexander follows these principles:
+
+- Both trasnformers and estimators expect pd.DataFrame as structure for the data
+- Pretty much all data transformations should be done as part of a alexander.pipeline.Pipeline()
+- Where possible, Alexander tries to perfectly mirror scikit-learn's API
+- Alexander's transformers have a self.transformers attribute where the actual transformers are stored (normally, one for column; before `fit` this attribute is empty)
+- Alexander's estimators have a sefl.estimator where the actual estimator is stored
+
 # What have been done so far
 The following scikit-learn classes have been either wrapped or replaced:
 
