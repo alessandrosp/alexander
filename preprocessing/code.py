@@ -20,8 +20,8 @@ class LabelEncoder(sklearn.preprocessing.LabelEncoder):
 
     Attributes
     ----------
-    encoders : dict
-        A dict containing the encoders used on each column, where the keys in
+    transformers : dict
+        A dict containing the transformers used on each column, where the keys in
         the dictionary are the name of the columns of the df used to fit the
         Alexander encoder. Empty before fit().
     encodings : dict, e.g., {'Sex': ['female', 'male']}
@@ -31,7 +31,7 @@ class LabelEncoder(sklearn.preprocessing.LabelEncoder):
     """
 
     def __init__(self):
-        self.encoders = {}
+        self.transformers = {}
         self.encodings = {}
     
     def fit(self, X, y=None):
@@ -51,9 +51,9 @@ class LabelEncoder(sklearn.preprocessing.LabelEncoder):
         elif isinstance(X, pd.Series):
             cX = pd.DataFrame(X)
         for column in cX.columns:
-            self.encoders[column] = sklearn.preprocessing.LabelEncoder()
-            self.encoders[column].fit(cX[column])
-            self.encodings[column] = self.encoders[column].classes_.tolist()
+            self.transformers[column] = sklearn.preprocessing.LabelEncoder()
+            self.transformers[column].fit(cX[column])
+            self.encodings[column] = self.transformers[column].classes_.tolist()
          
     def transform(self, X):
         """Given a DataFrame it returns a DataFrame with transformed features.
@@ -73,7 +73,7 @@ class LabelEncoder(sklearn.preprocessing.LabelEncoder):
         elif isinstance(X, pd.Series):
             cX = pd.DataFrame(X)
         for column in cX.columns:
-            cX[column] = self.encoders[column].transform(cX[column])
+            cX[column] = self.transformers[column].transform(cX[column])
         cX.encodings = self.encodings
         return cX
 
@@ -114,14 +114,14 @@ class OneHotEncoder(sklearn.preprocessing.OneHotEncoder):
 
     Attributes
     ----------
-    encoders : dict
-        A dict containing the encoders used on each column, where the keys in
+    transformers : dict
+        A dict containing the transformers used on each column, where the keys in
         the dictionary are the name of the columns of the df used to fit the
         Alexander encoder. Empty before fit().
     """
 
     def __init__(self):
-        self.encoders = {}
+        self.transformers = {}
 
     def fit(self, X, y=None):
         """For each column in pd.DataFrame an encoder is fitted.
@@ -140,9 +140,9 @@ class OneHotEncoder(sklearn.preprocessing.OneHotEncoder):
         elif isinstance(X, pd.Series):
             cX = pd.DataFrame(X)
         for column in cX.columns:
-            self.encoders[column] = sklearn.preprocessing.OneHotEncoder(
+            self.transformers[column] = sklearn.preprocessing.OneHotEncoder(
                 sparse=False)
-            self.encoders[column].fit(pd.DataFrame(cX[column]))
+            self.transformers[column].fit(pd.DataFrame(cX[column]))
 
     def transform(self, X):
         """Given a DataFrame it returns a DataFrame with transformed features.
@@ -165,7 +165,7 @@ class OneHotEncoder(sklearn.preprocessing.OneHotEncoder):
         # TODO(): as per now, if pd.DataFrame doesn't have attribute encodings
         #         this will raise an error; this shouldn't happen
         for column in cX.columns:
-            one_hot_encoded = self.encoders[column].transform(pd.DataFrame(cX[column]))
+            one_hot_encoded = self.transformers[column].transform(pd.DataFrame(cX[column]))
             new_columns = ['is_'+value for value in X.encodings[column]]
             new_df = pd.DataFrame(one_hot_encoded,
                                   index=cX.index,
