@@ -303,3 +303,23 @@ class MissingValuesFiller(object):
         self.fit(X, y)
         result = self.transform(X)
         return result
+
+
+class StandardScaler(sklearn.preprocessing.StandardScaler):
+    def transform(self, X):
+        """Predict class for X.
+
+        Parameters
+        ----------
+        X : pd.DataFrame, shape [n_samples, n_feature]
+            The pd.DataFrame containing the features.
+
+        Returns
+        -------
+        The predicted classes as pd.DataFrame.
+        """
+        result = pd.DataFrame(
+            super(StandardScaler, self).transform(X),
+            index=X.index,
+            columns=X.columns)
+        return result
