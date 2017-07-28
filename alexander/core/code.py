@@ -1,11 +1,12 @@
-import pandas as pd
 import inspect
+
+import pandas as pd
 
 class InputIsNotPandas(Exception):
     """Raised when the input is not a DataFrame or Series."""
 
 
-class AlexanderBaseEstimator():
+class AlexanderBaseEstimator(object):
     """Base class for Alexander's Estimator.
     """
 
@@ -31,9 +32,6 @@ class AlexanderBaseEstimator():
             if y.shape[1] == 1:
                 n_rows = y.shape[0]
                 y = y.values.reshape(n_rows,)
-        # super(self.__class__, self).fit(X, y, sample_weight)
-        # mro = inspect.getmro(self.__class__)
-        # mro[mro.index(AlexanderBaseEstimator) + 1].fit(self, X, y)
         self._get_coparent_class().fit(self, X, y)
         try:
             self.features = X.columns  # if pd.DataFrame()
@@ -48,12 +46,12 @@ class AlexanderBaseEstimator():
     def predict(self, X):
         """Output predictions for X."""
         self._check_input_is_pandas(X)
-        # predictions = super(self.__class__, self).predict(X)
-        predictions = inspect.getmro(self.__class__)[2].predict(self, X)
+        predictions = self._get_coparent_class().predict(self, X)
         if (len(predictions.shape) == 1 or predictions.shape[1] == 1):
-            return pd.DataFrame(predictions, columns=['prediction'])
-        # If more than one output
-        else:
+            return pd.DataFrame(predictions,
+                columns=['prediction'], index=X.index)
+        else:  # If more than one output
             columns_names = ['prediction_{}'.format(ix) 
                              for ix in range(predictions.shape[1])]
-            return pd.DataFrame(predictions, columns=columns_names)
+            return pd.DataFrame(predictions, columns=columns_names,
+                index=X.index)

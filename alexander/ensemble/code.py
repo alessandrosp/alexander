@@ -1,97 +1,66 @@
-import pandas as pd
+from ..core import AlexanderBaseEstimator
 import sklearn.ensemble
 
-class RandomForestClassifier(sklearn.ensemble.RandomForestClassifier):
-    """Wrapper for scikit-learn RandomForestClassifier.
+class AdaBoostClassifier(AlexanderBaseEstimator, sklearn.ensemble.AdaBoostClassifier):
+    """Wrapper for sklearn.ensemble.AdaBoostClassifier()."""
+    pass
 
-    Parameters
-    ----------
-    Same as sklearn.ensemble.RandomForestClassifier()
 
-    Attributes
-    ----------
-    features : list
-        A list containing all the features of the pd.DataFrame passed as
-        argument to the .fit() method.
-    feature_importances : [tuple]
-        A list of tuples, each containing the name of the feature and its
-        importance for the classifier
-    """
+class AdaBoostRegressor(AlexanderBaseEstimator, sklearn.ensemble.AdaBoostRegressor):
+    """Wrapper for sklearn.ensemble.AdaBoostRegressor()."""
+    pass
 
-    def __init__(self,
-                 n_estimators=10,
-                 criterion="gini",
-                 max_depth=None,
-                 min_samples_split=2,
-                 min_samples_leaf=1,
-                 min_weight_fraction_leaf=0.,
-                 max_features="auto",
-                 max_leaf_nodes=None,
-                 min_impurity_split=1e-7,
-                 bootstrap=True,
-                 oob_score=False,
-                 n_jobs=1,
-                 random_state=None,
-                 verbose=0,
-                 warm_start=False,
-                 class_weight=None):
-        super(RandomForestClassifier, self).__init__(
-            n_estimators=n_estimators,
-            criterion=criterion,
-            max_depth=max_depth,
-            min_samples_split=min_samples_split,
-            min_samples_leaf=min_samples_leaf,
-            min_weight_fraction_leaf=min_weight_fraction_leaf,
-            max_features=max_features,
-            max_leaf_nodes=max_leaf_nodes,
-            min_impurity_split=min_impurity_split,
-            bootstrap=bootstrap,
-            oob_score=oob_score,
-            n_jobs=n_jobs,
-            random_state=random_state,
-            verbose=verbose,
-            warm_start=warm_start,
-            class_weight=class_weight)
-        self.features = []
-        self.feature_importances = []
 
-    def fit(self, X, y, sample_weight=None):
-        """Fit self.estimator on X (features) and y (targets).
+class BaggingClassifier(AlexanderBaseEstimator, sklearn.ensemble.BaggingClassifier):
+    """Wrapper for sklearn.ensemble.BaggingClassifier()."""
+    pass
 
-        Parameters
-        ----------
-        X : pd.DataFrame, shape [n_samples, n_feature]
-            The pd.DataFrame containing the features.
-        y : pd.DataFrame, shape [n_samples, 1] or [n_samples, n_outputs]
-            The pd.DataFrame containg the targets.
 
-        Returns
-        -------
-        self
-        """
-        if isinstance(y, pd.DataFrame):
-            if y.shape[1] == 1:
-                n_rows = y.values.shape[0]
-                y = y.values.reshape(n_rows,)
-        super(RandomForestClassifier, self).fit(X, y, sample_weight)
-        self.features = X.columns
-        self.feature_importances = list(
-            zip(self.features, self.feature_importances_))
+class BaggingRegressor(AlexanderBaseEstimator, sklearn.ensemble.BaggingRegressor):
+    """Wrapper for sklearn.ensemble.BaggingRegressor()."""
+    pass
 
-    def predict(self, X):
-        """Predict class for X.
 
-        Parameters
-        ----------
-        X : pd.DataFrame, shape [n_samples, n_feature]
-            The pd.DataFrame containing the features.
+class ExtraTreesClassifier(AlexanderBaseEstimator, sklearn.ensemble.ExtraTreesClassifier):
+    """Wrapper for sklearn.ensemble.ExtraTreesClassifier()."""
+    pass
 
-        Returns
-        -------
-        The predicted classes as pd.DataFrame.
-        """
-        result = pd.DataFrame(
-            super(RandomForestClassifier, self).predict(X),
-            index=X.index,
-            columns=['prediction'])
-        return result
+
+class ExtraTreesRegressor(AlexanderBaseEstimator, sklearn.ensemble.ExtraTreesRegressor):
+    """Wrapper for sklearn.ensemble.ExtraTreesRegressor()."""
+    pass
+
+
+class GradientBoostingClassifier(AlexanderBaseEstimator, sklearn.ensemble.GradientBoostingClassifier):
+    """Wrapper for sklearn.ensemble.GradientBoostingClassifier()."""
+    pass
+
+
+class GradientBoostingRegressor(AlexanderBaseEstimator, sklearn.ensemble.GradientBoostingRegressor):
+    """Wrapper for sklearn.ensemble.GradientBoostingRegressor()."""
+    pass
+
+
+class IsolationForest(AlexanderBaseEstimator, sklearn.ensemble.IsolationForest):
+    """Wrapper for sklearn.ensemble.IsolationForest()."""
+    pass
+
+
+class RandomForestClassifier(AlexanderBaseEstimator, sklearn.ensemble.RandomForestClassifier):
+    """Wrapper for sklearn.ensemble.RandomForestClassifier()."""
+    pass
+
+
+class RandomTreesEmbedding(AlexanderBaseEstimator, sklearn.ensemble.RandomTreesEmbedding):
+    """Wrapper for sklearn.ensemble.RandomTreesEmbedding()."""
+    pass
+
+
+class RandomForestRegressor(AlexanderBaseEstimator, sklearn.ensemble.RandomForestRegressor):
+    """Wrapper for sklearn.ensemble.RandomForestRegressor()."""
+    pass
+
+
+class VotingClassifier(AlexanderBaseEstimator, sklearn.ensemble.VotingClassifier):
+    """Wrapper for sklearn.ensemble.VotingClassifier()."""
+    pass
