@@ -5,7 +5,7 @@ import pandas as pd
 def load_titanic(return_X_y=False):
     """Load and return the Titanic dataset (classification).
 
-    The iris dataset is a classic classification dataset.
+    The Titanic dataset is a classic classification dataset.
 
     More info here: https://www.kaggle.com/c/titanic
 
