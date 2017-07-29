@@ -6,7 +6,8 @@ class NoneTransformer():
     It can be though as a identity transformer: transform is called on X and it
     returns X without any transformation. This is used as a replacement for None
     values in the pipeline (which are themselves used to signify no
-    transformation is needed for the selected columns)."""
+    transformation is needed for the selected columns).
+    """
 
     def __init__(self):
         pass

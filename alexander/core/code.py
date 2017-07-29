@@ -12,17 +12,15 @@ class AlexanderBaseEstimator(object):
 
     def _check_input_is_pandas(self, X, y=pd.DataFrame()):
         """Makes sure input is a Pandas structure."""
-        if not (isinstance(X, pd.DataFrame)
-                or isinstance(X, pd.Series)):
+        if not isinstance(X, (pd.DataFrame, pd.Series)):
             raise InputIsNotPandas('Your X is not a Pandas object.')
         if not y.empty:
-            if not (isinstance(y, pd.DataFrame)
-                    or isinstance(y, pd.Series)):
+            if not isinstance(y, (pd.DataFrame, pd.Series)):
                 raise InputIsNotPandas('Your y is not a Pandas object.')
 
     def _get_coparent_class(self):
-        mro = inspect.getmro(self.__class__)
-        coparent = mro[mro.index(AlexanderBaseEstimator) + 1]
+        relatives = inspect.getmro(self.__class__)
+        coparent = relatives[relatives.index(AlexanderBaseEstimator) + 1]
         return coparent
 
     def fit(self, X, y, sample_weight=None):
