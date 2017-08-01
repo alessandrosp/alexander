@@ -1,5 +1,7 @@
+import functools
 import inspect
 
+import mock
 import pandas as pd
 
 class InputIsNotPandas(Exception):
@@ -44,7 +46,11 @@ class AlexanderBaseEstimator(object):
     def predict(self, X):
         """Output predictions for X."""
         self._check_input_is_pandas(X)
-        predictions = self._get_coparent_class().predict(self, X)
+        coparent = self._get_coparent_class()
+        coparent_predict_proba = functools.partial(coparent.predict_proba, self)
+        with mock.patch.object(self, 'predict_proba',
+            side_effect=coparent_predict_proba):
+            predictions = coparent.predict(self, X)
         if (len(predictions.shape) == 1 or predictions.shape[1] == 1):
             return pd.DataFrame(predictions,
                 columns=['prediction'], index=X.index)
@@ -53,3 +59,24 @@ class AlexanderBaseEstimator(object):
                              for ix in range(predictions.shape[1])]
             return pd.DataFrame(predictions, columns=columns_names,
                 index=X.index)
+
+    def predict_proba(self, X):
+        """Predict class probabilities for X."""
+        print('You should not be here!')
+        predictions = self._get_coparent_class().predict_proba(self, X)
+        columns_names = ['prob_{}'.format(class_name)
+                         for class_name in self.classes_]
+        # TODO(): Note that this will break for multi-output
+        return pd.DataFrame(predictions, columns=columns_names, index=X.index)
+        
+    def predict_log_proba(self, X):
+        """Predict class log-probabilities for X."""
+        coparent = self._get_coparent_class()
+        coparent_predict_proba = functools.partial(coparent.predict_proba, self)
+        with mock.patch.object(self, 'predict_proba',
+            side_effect=coparent_predict_proba):
+            predictions = coparent.predict_log_proba(self, X)
+        columns_names = ['prob_{}'.format(class_name)
+                         for class_name in self.classes_]
+        # TODO(): Note that this will break for multi-output
+        return pd.DataFrame(predictions, columns=columns_names, index=X.index)
