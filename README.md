@@ -6,13 +6,13 @@ Alexander mirrors sklearn's API and structure. Most classes are either estimator
 
 ```python
 
+import alexander.datasets
 import alexander.ensemble
 import alexander.pipeline
 import alexander.preprocessing
 import pandas as pd
 
-df = pd.read_csv('train.csv')  # We load the Titanic dataset
-df = df.set_index('PassengerId')
+data, target = alexander.datasets.load_titanic(return_X_y=True)
 
 rf_pipeline = alexander.pipeline.Pipeline([
     (['Pclass', 'Fare'], None),
@@ -23,34 +23,41 @@ rf_pipeline = alexander.pipeline.Pipeline([
                   alexander.preprocessing.LabelEncoder(),
                   alexander.preprocessing.OneHotEncoder()])
 ])
-rf_pipeline.fit(df)  # Note how the pipeline is trained on the whole dataset
+rf_pipeline.fit(data)  # Note how the pipeline is trained on the whole dataset
 
-X_all = df.loc[:, df.columns != 'Survived']
-y_all = df.loc[:, ['Survived']]
-X_train, X_test, y_train, y_test = sklearn.model_selection.train_test_split(X_all, y_all, test_size=0.2))
+X_train, X_test, y_train, y_test = sklearn.model_selection.train_test_split(data, target, test_size=0.2))
 
 rf_train = rf_pipeline.transform(X_train)
-rf_clf = alexander.ensemble.RandomForestClassifier(max_features=None)
+rf_clf = alexander.ensemble.RandomForestClassifier(n_estimators=100)
 rf_clf.fit(rf_train, y_train)  # The model is ready to be used!
-print(RandomForestClassifier.feature_importances)
 
 ```
 
 Alexander follows these principles:
 
-- Both trasnformers and estimators expect pd.DataFrame as structure for the data
+- Alexander has the same interface as scikit-learn
+- Transformers and estimators expect pd.DataFrame as input
+- Every method or function that returns something, should return a pd.DataFrame
+
+Guidelines for Alexander usage:
+
 - Pretty much all data transformations should be done as part of an alexander.pipeline.Pipeline()
-- Where possible, Alexander tries to perfectly mirror scikit-learn's API
-- Alexander's transformers have a self.transformers attribute where the actual transformers are stored (normally, one for column; before `fit` this attribute is empty)
-- Alexander's estimators have a self.estimator where the actual estimator is stored
+- Pipelines should be fitted to the whole dataset, before any split occures
 
-# What have been done so far
-The following scikit-learn classes have been either wrapped or replaced:
 
-- FeaturesEncoder, newly created, same as LabelEncoder
-- Imputer, replaced by MissingValuesFiller
-- LabelEncoder, wrapped
-- MissingValuesFiller, newly created, it replaces Imputer
-- OneHotEncoder, wrapped
-- Pipeline, replaced by class with the same name
-- RandomForestClassifier, wrapped
+# Status
+These are the modules there are currently implemented in Alexander and their status:
+
+| Module                  | Status           | Notes                                                |
+|-------------------------|------------------|------------------------------------------------------|
+| sklearn.datasets        | Work in progress | Added a new function to load the Titanic dataset     |
+| sklearn.ensemble        | Fully wrapped    |                                                      |
+| sklearn.model_selection | Work in progress |                                                      |
+| sklearn.neural_network  | Fully wrapped    |                                                      |
+| sklearn.pipeline        | Fully replaced   | Pipeline works differently in sklearn and Alexander  |
+| sklearn.preprocessing   | Work in progress | This will have to be re-designed                     |
+
+Please, refrain from using any module whose status is not either `Fully wrapped` or `Fully replaced`.
+
+# Extra
+If you find this library useful, consider dropping me a message or starring this repo so that I know there are people interested in the project out there. (:
