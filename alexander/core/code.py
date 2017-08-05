@@ -4,14 +4,45 @@ import inspect
 import mock
 import pandas as pd
 
+class InputIsEmpty(Exception):
+    """Raised when the input is an empty Pandas structure."""
+
+
 class InputIsNotPandas(Exception):
     """Raised when the input is not a DataFrame or Series."""
 
 
-class AlexanderBaseEstimator(object):
-    """Base class for Alexander's Estimator.
-    """
+def check_and_preprocess_input(data):
+    """Check that input is Pandas structure and coerce it to DataFrame.
 
+    The function serves two purposes: (1) it raises an error if the input was
+    not one of the four Pandas structure (DataFrame, Series, SparseDataFrame and
+    SparseSeries). (2) It makes sure that serieses are coerced to their
+    DataFrame equivalent (dense to dense and sparse to sparse)."""
+
+    # Check: data is not a Pandas structure
+    if not isinstance(data, (pd.DataFrame, pd.Series)):
+        raise InputIsNotPandas('Your input is not a Pandas object.')
+
+    # Check: data is empty
+    if data.empty:
+        raise InputIsEmpty('Your input is an empty Pandas object.')
+
+    # Coerce: data is a series, we coerce it to a pd.DataFrame (sparse or dense)
+    if isinstance(data, pd.Series):
+        if not isinstance(data, pd.SparseSeries):
+            data = pd.DataFrame(data, columns=[data.name], index=data.index)
+        else:
+            data = pd.SparseDataFrame(
+                data, columns=[data.name], index=data.index
+            )
+    return data
+
+
+class AlexanderBaseEstimator(object):
+    """Base class for Alexander's Estimator."""
+
+    # TODO(): erase this method, being replaced by function
     def _check_input_is_pandas(self, X, y=pd.DataFrame()):
         """Makes sure input is a Pandas structure."""
         if not isinstance(X, (pd.DataFrame, pd.Series)):

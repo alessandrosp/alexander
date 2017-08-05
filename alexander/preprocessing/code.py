@@ -1,3 +1,5 @@
+from .. import core
+
 import collections
 
 import numpy as np
@@ -99,6 +101,41 @@ class FeaturesEncoder(LabelEncoder):
 
 
 class OneHotEncoder(sklearn.preprocessing.OneHotEncoder):
+    """Encode categorical values using one-hot encoding."""
+
+    def fit(self, X, y=None):
+        """Fit to some data and save the columns names."""
+        cX = core.check_and_preprocess_input(X)
+        columns_names = []
+        # TODO(): Check whether original columns names exists in DataFrame
+        for column in cX.columns:
+            for value in list(cX[column].unique()):
+                columns_names.append(str(value))
+        self.columns_names = columns_names
+        super().fit(self, cX, None)
+
+    def transform(self, X):
+        """."""
+        cX = core.check_and_preprocess_input(X)
+        transformed = super().transform(cX)
+        new_columns = ['is_' + value for value in self.columns_names]
+        if self.sparse:
+            results = pd.SparseDataFrame(
+                transformed, columns=new_columns, index=cX.index
+            )
+        else:
+            results = pd.DataFrame(
+                transformed, columns=new_columns, index=cX.index
+            )
+        return results
+
+    def fit_transform(self, X):
+        """Fit to X, then transform X."""
+        self.fit(X)
+        return self.transform(X)
+
+
+class OneHotEncoderBackup(sklearn.preprocessing.OneHotEncoder):
     """Encode categorical values using one-hot encoding.
 
     Same as sklearn OneHotEncoder but (a) expects a DataFrame or Series, (b)
@@ -133,10 +170,7 @@ class OneHotEncoder(sklearn.preprocessing.OneHotEncoder):
         -------
         self
         """
-        if isinstance(X, pd.DataFrame):
-            cX = X.copy()
-        elif isinstance(X, pd.Series):
-            cX = pd.DataFrame(X)
+        cX = core.check_and_preprocess_input(X)
         for column in cX.columns:
             self.transformers[column] = sklearn.preprocessing.OneHotEncoder(
                 sparse=False)
@@ -155,10 +189,7 @@ class OneHotEncoder(sklearn.preprocessing.OneHotEncoder):
         result : pd.DataFrame
             The DataFrame cointaining the one-hot encoded values.
         """
-        if isinstance(X, pd.DataFrame):
-            cX = X.copy()
-        elif isinstance(X, pd.Series):
-            cX = pd.DataFrame(X)
+        cX = core.check_and_preprocess_input(X)
         new_dfs = []
         # TODO(): as per now, if pd.DataFrame doesn't have attribute encodings
         #         this will raise an error; this shouldn't happen
@@ -236,10 +267,7 @@ class MissingValuesFiller(object):
         -------
         self
         """
-        if isinstance(X, pd.DataFrame):
-            cX = X.copy()
-        elif isinstance(X, pd.Series):
-            cX = pd.DataFrame(X)
+        cX = core.check_and_preprocess_input(X)
         for column in cX.columns:
             if self.missing_values:
                 no_missing_values = [value for value in cX[column].values 
@@ -302,24 +330,4 @@ class MissingValuesFiller(object):
         """
         self.fit(X, y)
         result = self.transform(X)
-        return result
-
-
-class StandardScaler(sklearn.preprocessing.StandardScaler):
-    def transform(self, X):
-        """Predict class for X.
-
-        Parameters
-        ----------
-        X : pd.DataFrame, shape [n_samples, n_feature]
-            The pd.DataFrame containing the features.
-
-        Returns
-        -------
-        The predicted classes as pd.DataFrame.
-        """
-        result = pd.DataFrame(
-            super(StandardScaler, self).transform(X),
-            index=X.index,
-            columns=X.columns)
         return result
