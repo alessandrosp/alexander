@@ -2,6 +2,7 @@ from .. import core
 
 import collections
 
+import mock
 import numpy as np
 import pandas as pd
 import sklearn.preprocessing
@@ -112,10 +113,12 @@ class OneHotEncoder(sklearn.preprocessing.OneHotEncoder):
             for value in list(cX[column].unique()):
                 columns_names.append(str(value))
         self.columns_names = columns_names
-        super().fit(self, cX, None)
+        with mock.patch.object(self, 'fit_transform',
+            side_effect=super().fit_transform):
+            super().fit(cX)
 
     def transform(self, X):
-        """."""
+        """Transform X using the information acquired during fit()."""
         cX = core.check_and_preprocess_input(X)
         transformed = super().transform(cX)
         new_columns = ['is_' + value for value in self.columns_names]

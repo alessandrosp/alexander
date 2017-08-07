@@ -36,6 +36,7 @@ def check_and_preprocess_input(data):
             data = pd.SparseDataFrame(
                 data, columns=[data.name], index=data.index
             )
+
     return data
 
 
