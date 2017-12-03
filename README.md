@@ -61,7 +61,7 @@ Please, refrain from using any module whose status is not either `Fully wrapped`
 
 # Documentation
 
-## sklearn.preprocessin
+## sklearn.preprocessing
 
 ### OneHotEncoder
 
