@@ -11,7 +11,6 @@ import sklearn.preprocessing
 # TODO(): Make sure to call check_and_preprocess_input
 # TODO(): Refactor/change LabelEncoder()
 # TODO(): Most of these classes are identical - refactor?
-# TODO(): MaxAbsScaler is untested
 # TODO(): Generate our own warnings
 
 class Binarizer(sklearn.preprocessing.Binarizer):
@@ -114,7 +113,65 @@ class MaxAbsScaler(sklearn.preprocessing.MaxAbsScaler):
 		X_index = X.index
 		X_columns = X.columns
 		if not self.copy:
-			message = 'Alexander does not allow inplace scaling'
+			message = 'Alexander does not allow inplace scaling or normalization'
+			warnings.warn(message, UserWarning)
+		result = super().transform(X)
+		return pd.DataFrame(result, index=X_index, columns=X_columns)
+
+
+class MinMaxScaler(sklearn.preprocessing.MinMaxScaler):
+	"""Wrapper for sklearn.preprocessing.MinMaxScaler()."""
+
+	def fit(self, X, y=None):
+		"""Compute the minimum and maximum to be used for later scaling."""
+		X = core.check_and_preprocess_input(X)
+		super().fit(X, y)
+
+	def fit_transform(self, X, y=None):
+		"""Fit to data, then transform it."""
+		self.fit(X, y)
+		return self.transform(X)
+
+	def inverse_transform(self, X):
+		"""Undo the scaling of X according to feature_range."""
+		X = core.check_and_preprocess_input(X)
+		X_index = X.index
+		X_columns = X.columns
+		result = super().inverse_transform(X)
+		return pd.DataFrame(result, index=X_index, columns=X_columns)
+
+	def transform(self, X):
+		"""Scaling features of X according to feature_range."""
+		X = core.check_and_preprocess_input(X)
+		X_index = X.index
+		X_columns = X.columns
+		if not self.copy:
+			message = 'Alexander does not allow inplace scaling or normalization'
+			warnings.warn(message, UserWarning)
+		result = super().transform(X)
+		return pd.DataFrame(result, index=X_index, columns=X_columns)
+
+
+class Normalizer(sklearn.preprocessing.Normalizer):
+	"""Wrapper for sklearn.preprocessing.Normalizer()."""
+
+	def fit(self, X, y=None):
+		"""Compute the minimum and maximum to be used for later scaling."""
+		X = core.check_and_preprocess_input(X)
+		super().fit(X, y)
+
+	def fit_transform(self, X, y=None):
+		"""Fit to data, then transform it."""
+		self.fit(X, y)
+		return self.transform(X)
+
+	def transform(self, X):
+		"""Scaling features of X according to feature_range."""
+		X = core.check_and_preprocess_input(X)
+		X_index = X.index
+		X_columns = X.columns
+		if not self.copy:
+			message = 'Alexander does not allow inplace scaling or normalization'
 			warnings.warn(message, UserWarning)
 		result = super().transform(X)
 		return pd.DataFrame(result, index=X_index, columns=X_columns)
@@ -125,6 +182,7 @@ class OneHotEncoder(sklearn.preprocessing.OneHotEncoder):
 
 	def fit(self, X, y=None):
 		"""Fit the imputer on X."""
+		X = core.check_and_preprocess_input(X)
 		with mock.patch.object(self, 'fit_transform',
 			                   side_effect=super().fit_transform):
 			super().fit(X, y)
@@ -136,8 +194,31 @@ class OneHotEncoder(sklearn.preprocessing.OneHotEncoder):
 
 	def transform(self, X):
 		"""Transform X using one-hot encoding."""
+		X = core.check_and_preprocess_input(X)
 		result = super().transform(X)
 		return pd.DataFrame(result)
+
+class PolynomialFeatures(sklearn.preprocessing.PolynomialFeatures):
+	"""Wrapper for sklearn.preprocessing.PolynomialFeatures()."""
+
+	def fit(self, X, y=None):
+		"""Compute number of output features."""
+		X = core.check_and_preprocess_input(X)
+		super().fit(X, y)
+
+	def fit_transform(self, X, y=None):
+		"""Fit to data, then transform it."""
+		self.fit(X, y)
+		return self.transform(X)
+
+	def transform(self, X):
+		"""Transform data to polynomial features."""
+		X = core.check_and_preprocess_input(X)
+		X_index = X.index
+		X_columns = self.get_feature_names(X.columns)
+		result = super().transform(X)
+		return pd.DataFrame(result, index=X_index, columns=X_columns)
+
 
 class LabelEncoder(sklearn.preprocessing.LabelEncoder):
     """Encode labels with value between 0 and n_classes-1.

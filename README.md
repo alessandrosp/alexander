@@ -71,17 +71,38 @@ Done. It behaves as in scikit-learn except for the fact both transform() and fit
 
 Done. It behaves as in scikit-learn except for the fact that transform(), inverse_transform() and fit_transform() return pd.DataFrame(). The returned DataFrame has the same index and columns names as the input.
 
-### KernelCenterer
-
-Not implemented yet.
 
 ### Imputer
 
 Done. It behaves as in scikit-learn except for the fact both transform() and fit_transform() return pd.DataFrame().
 
+### KernelCenterer
+
+Not implemented yet.
+
+### LabelBinarizer
+
+Not implemented yet.
+
+### LabelEncoder
+
+Not implemented yet.
+
+### MultiLabelBinarizer
+
+Not implemented yet.
+
 ### MaxAbsScaler
 
-Done. It behaves as in scikit-learn except for the fact that transform(), inverse_transform() and fit_transform() return pd.DataFrame(). Note: Alexander does not allow inplace scaling, so parameter *copy* is de facto always set to True.
+Done. It behaves as in scikit-learn except for the fact that transform(), inverse_transform() and fit_transform() return pd.DataFrame(). Note: Alexander does not allow inplace scaling or normalization, so parameter *copy* is de facto always set to True.
+
+### MinMaxScaler
+
+Done. It behaves as in scikit-learn except for the fact that transform(), inverse_transform() and fit_transform() return pd.DataFrame(). Note: Alexander does not allow inplace scaling or normalization, so parameter *copy* is de facto always set to True.
+
+### Normalizer
+
+Done. It behaves as in scikit-learn except for the fact that transform(), inverse_transform() and fit_transform() return pd.DataFrame(). Note: Alexander does not allow inplace scaling or normalization, so parameter *copy* is de facto always set to True.
 
 ### OneHotEncoder
 
