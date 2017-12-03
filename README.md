@@ -2,7 +2,7 @@
 **Alexander** is a Python wrapper that aims to make [**scikit-learn**](http://scikit-learn.org/) fully compatible with [**pandas**](http://pandas.pydata.org/pandas-docs/stable/index.html).
 
 # Example
-Alexander mirrors sklearn's API and structure. Most classes are either estimators (they have `fit`, `predict` and `fit_predict` methods) or transformers (they have a `fit`, `transform` and `fit_transform` methods). Transformers takes pd.DataFrame as input and returns pd.DataFrame as output, and are expected to be concatenated into a pipelines.
+Alexander mirrors sklearn's API and structure. Most classes are either estimators (they have `fit`, `predict` and `fit_predict` methods) or transformers (they have a `fit`, `transform` and `fit_transform` methods). Transformers takes pd.DataFrame as input and returns pd.DataFrame as output, and are expected to be concatenated into pipelines.
 
 ```python
 
@@ -58,6 +58,18 @@ These are the modules there are currently implemented in Alexander and their sta
 | sklearn.preprocessing   | Work in progress | This will have to be re-designed                     |
 
 Please, refrain from using any module whose status is not either `Fully wrapped` or `Fully replaced`.
+
+# Documentation
+
+## sklearn.preprocessin
+
+### OneHotEncoder
+
+Done. It behaves as in scikit-learn except for the fact both transform() and fit_transform() return pd.DataFrame(). Currently the columns names are just integers (starting from 0).
+
+# Notes
+
+- Usage of mock: if you look into the code from time to time you'll encounter non-orthodox usages of the mock library. This is because Alexander uses mock functionalities to repeat infinite loops. Imagine for example an Alexander class that implements a fit(), a transform() and a fit_transform() methods. The first two methods call their sklearn equivalents (via super()) while fit_transform call self.fit() and self.transform() one after the other. However, sklearn fit() often call self.fit_transform() behind the curtains so what happens is: self.fit() calls super().fit(), which calls self.fit_transform(), which has now been replaced by a different method whose first action is to simply call self.fit() et voilà we have an infinite loop. Mock solves all this.
 
 # Extra
 If you find this library useful, consider dropping me a message or starring this repo so that I know there are people interested in the project out there. (:

@@ -4,11 +4,15 @@ import inspect
 import mock
 import pandas as pd
 
-class InputIsEmpty(Exception):
+class Error(Exception):
+    """Error class for the module."""
+
+
+class InputIsEmpty(Error):
     """Raised when the input is an empty Pandas structure."""
 
 
-class InputIsNotPandas(Exception):
+class InputIsNotPandas(Error):
     """Raised when the input is not a DataFrame or Series."""
 
 
@@ -18,7 +22,8 @@ def check_and_preprocess_input(data):
     The function serves two purposes: (1) it raises an error if the input was
     not one of the four Pandas structure (DataFrame, Series, SparseDataFrame and
     SparseSeries). (2) It makes sure that serieses are coerced to their
-    DataFrame equivalent (dense to dense and sparse to sparse)."""
+    DataFrame equivalent (dense to dense and sparse to sparse).
+    """
 
     # Check: data is not a Pandas structure
     if not isinstance(data, (pd.DataFrame, pd.Series)):
@@ -81,7 +86,7 @@ class AlexanderBaseEstimator(object):
         coparent = self._get_coparent_class()
         coparent_predict_proba = functools.partial(coparent.predict_proba, self)
         with mock.patch.object(self, 'predict_proba',
-            side_effect=coparent_predict_proba):
+                               side_effect=coparent_predict_proba):
             predictions = coparent.predict(self, X)
         if (len(predictions.shape) == 1 or predictions.shape[1] == 1):
             return pd.DataFrame(predictions,
@@ -94,7 +99,6 @@ class AlexanderBaseEstimator(object):
 
     def predict_proba(self, X):
         """Predict class probabilities for X."""
-        print('You should not be here!')
         predictions = self._get_coparent_class().predict_proba(self, X)
         columns_names = ['prob_{}'.format(class_name)
                          for class_name in self.classes_]
@@ -106,9 +110,13 @@ class AlexanderBaseEstimator(object):
         coparent = self._get_coparent_class()
         coparent_predict_proba = functools.partial(coparent.predict_proba, self)
         with mock.patch.object(self, 'predict_proba',
-            side_effect=coparent_predict_proba):
+                               side_effect=coparent_predict_proba):
             predictions = coparent.predict_log_proba(self, X)
         columns_names = ['prob_{}'.format(class_name)
                          for class_name in self.classes_]
         # TODO(): Note that this will break for multi-output
         return pd.DataFrame(predictions, columns=columns_names, index=X.index)
+
+class AlexanderBaseTransformer(object):
+    """Work in progress."""
+    pass
