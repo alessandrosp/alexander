@@ -63,6 +63,26 @@ Please, refrain from using any module whose status is not either `Fully wrapped`
 
 ## sklearn.preprocessing
 
+### Binarizer
+
+Done. It behaves as in scikit-learn except for the fact both transform() and fit_transform() return pd.DataFrame(). The returned DataFrame has the same index and columns names as the input. Note: even though fit() does not really do anything here, the input is still checked and an error is returned if X is not a Pandas object.
+
+### FunctionTransformer
+
+Done. It behaves as in scikit-learn except for the fact that transform(), inverse_transform() and fit_transform() return pd.DataFrame(). The returned DataFrame has the same index and columns names as the input.
+
+### KernelCenterer
+
+Not implemented yet.
+
+### Imputer
+
+Done. It behaves as in scikit-learn except for the fact both transform() and fit_transform() return pd.DataFrame().
+
+### MaxAbsScaler
+
+Done. It behaves as in scikit-learn except for the fact that transform(), inverse_transform() and fit_transform() return pd.DataFrame(). Note: Alexander does not allow inplace scaling, so parameter *copy* is de facto always set to True.
+
 ### OneHotEncoder
 
 Done. It behaves as in scikit-learn except for the fact both transform() and fit_transform() return pd.DataFrame(). Currently the columns names are just integers (starting from 0).

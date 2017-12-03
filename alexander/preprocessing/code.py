@@ -1,17 +1,130 @@
 from .. import core
 
 import collections
+import warnings
 
 import mock
 import numpy as np
 import pandas as pd
 import sklearn.preprocessing
 
+# TODO(): Make sure to call check_and_preprocess_input
+# TODO(): Refactor/change LabelEncoder()
+# TODO(): Most of these classes are identical - refactor?
+# TODO(): MaxAbsScaler is untested
+# TODO(): Generate our own warnings
+
+class Binarizer(sklearn.preprocessing.Binarizer):
+	"""Wrapper for sklearn.preprocessing.Binarizer()."""
+
+	def fit(self, X, y=None):
+		"""Do nothing and return the estimator unchanged."""
+		_ = core.check_and_preprocess_input(X)
+
+	def fit_transform(self, X, y=None):
+		"""Fit to data, then transform it."""
+		self.fit(X, y)
+		return self.transform(X)
+
+	def transform(self, X):
+		"""Binarize each element of X."""
+		X = core.check_and_preprocess_input(X)
+		X_index = X.index
+		X_columns = X.columns
+		result = super().transform(X)
+		return pd.DataFrame(result, index=X_index, columns=X_columns)
+
+
+class FunctionTransformer(sklearn.preprocessing.FunctionTransformer):
+	"""Wrapper for sklearn.preprocessing.FunctionTransformer()."""
+
+	def fit(self, X, y=None):
+		"""Fit transformer by checking X."""
+		X = core.check_and_preprocess_input(X)
+		super().fit(X, y)
+
+	def fit_transform(self, X, y=None):
+		"""Fit to data, then transform it."""
+		self.fit(X, y)
+		return self.transform(X)
+
+	def inverse_transform(self, X):
+		"""Transform X using the inverse function."""
+		X = core.check_and_preprocess_input(X)
+		X_index = X.index
+		X_columns = X.columns
+		result = super().inverse_transform(X)
+		return pd.DataFrame(result, index=X_index, columns=X_columns)
+
+	def transform(self, X):
+		"""Transform X using the forward function."""
+		X = core.check_and_preprocess_input(X)
+		X_index = X.index
+		X_columns = X.columns
+		result = super().transform(X)
+		return pd.DataFrame(result, index=X_index, columns=X_columns)
+
+
+class Imputer(sklearn.preprocessing.Imputer):
+	"""Wrapper for sklearn.preprocessing.Imputer()."""
+
+	def fit(self, X, y=None):
+		"""Fit transformer by checking X."""
+		X = core.check_and_preprocess_input(X)
+		super().fit(X, y)
+
+	def fit_transform(self, X, y=None):
+		"""Fit to data, then transform it."""
+		self.fit(X, y)
+		return self.transform(X)
+
+	def transform(self, X):
+		"""Impute all missing values in X."""
+		X = core.check_and_preprocess_input(X)
+		X_index = X.index
+		X_columns = X.columns
+		result = super().transform(X)
+		return pd.DataFrame(result, index=X_index, columns=X_columns)
+
+
+class MaxAbsScaler(sklearn.preprocessing.MaxAbsScaler):
+	"""Wrapper for sklearn.preprocessing.MaxAbsScaler()."""
+
+	def fit(self, X, y=None):
+		"""Compute the maximum absolute value to be used for later scaling."""
+		X = core.check_and_preprocess_input(X)
+		super().fit(X, y)
+
+	def fit_transform(self, X, y=None):
+		"""Fit to data, then transform it."""
+		self.fit(X, y)
+		return self.transform(X)
+
+	def inverse_transform(self, X):
+		"""Scale back the data to the original representation."""
+		X = core.check_and_preprocess_input(X)
+		X_index = X.index
+		X_columns = X.columns
+		result = super().inverse_transform(X)
+		return pd.DataFrame(result, index=X_index, columns=X_columns)
+
+	def transform(self, X):
+		"""Scale the data."""
+		X = core.check_and_preprocess_input(X)
+		X_index = X.index
+		X_columns = X.columns
+		if not self.copy:
+			message = 'Alexander does not allow inplace scaling'
+			warnings.warn(message, UserWarning)
+		result = super().transform(X)
+		return pd.DataFrame(result, index=X_index, columns=X_columns)
+
+
 class OneHotEncoder(sklearn.preprocessing.OneHotEncoder):
 	"""Wrapper for sklearn.preprocessing.OneHotEncoder()."""
 
 	def fit(self, X, y=None):
-		"""Fit OneHotEncoder to X."""
+		"""Fit the imputer on X."""
 		with mock.patch.object(self, 'fit_transform',
 			                   side_effect=super().fit_transform):
 			super().fit(X, y)
