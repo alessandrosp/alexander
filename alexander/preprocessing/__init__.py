@@ -6,7 +6,9 @@ from .code import MinMaxScaler
 from .code import Normalizer
 from .code import OneHotEncoder
 from .code import PolynomialFeatures
-
+from .code import QuantileTransformer
+from .code import RobustScaler
+from .code import StandardScaler
 # from .code import FeaturesEncoder
 # from .code import MissingValuesFiller 
 from .code import LabelEncoder

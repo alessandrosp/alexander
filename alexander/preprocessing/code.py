@@ -8,6 +8,7 @@ import numpy as np
 import pandas as pd
 import sklearn.preprocessing
 
+# TODO(): You never run check_and_preprocess_input on y
 # TODO(): Make sure to call check_and_preprocess_input
 # TODO(): Refactor/change LabelEncoder()
 # TODO(): Most of these classes are identical - refactor?
@@ -216,6 +217,110 @@ class PolynomialFeatures(sklearn.preprocessing.PolynomialFeatures):
 		X = core.check_and_preprocess_input(X)
 		X_index = X.index
 		X_columns = self.get_feature_names(X.columns)
+		result = super().transform(X)
+		return pd.DataFrame(result, index=X_index, columns=X_columns)
+
+
+class QuantileTransformer(sklearn.preprocessing.QuantileTransformer):
+	"""Wrapper for sklearn.preprocessing.QuantileTransformer()."""
+
+	def fit(self, X, y=None):
+		"""Compute the quantiles used for transforming."""
+		X = core.check_and_preprocess_input(X)
+		super().fit(X, y)
+
+	def fit_transform(self, X, y=None):
+		"""Fit to data, then transform it."""
+		self.fit(X, y)
+		return self.transform(X)
+
+	def inverse_transform(self, X):
+		"""Back-projection to the original space."""
+		X = core.check_and_preprocess_input(X)
+		X_index = X.index
+		X_columns = X.columns
+		result = super().inverse_transform(X)
+		return pd.DataFrame(result, index=X_index, columns=X_columns)
+
+	def transform(self, X):
+		"""Feature-wise transformation of the data."""
+		X = core.check_and_preprocess_input(X)
+		X_index = X.index
+		X_columns = X.columns
+		if not self.copy:
+			message = 'Alexander does not allow inplace scaling or normalization'
+			warnings.warn(message, UserWarning)
+		result = super().transform(X)
+		return pd.DataFrame(result, index=X_index, columns=X_columns)
+
+
+class RobustScaler(sklearn.preprocessing.RobustScaler):
+	"""Wrapper for sklearn.preprocessing.RobustScaler()."""
+
+	def fit(self, X, y=None):
+		"""Compute the quantiles used for transforming."""
+		X = core.check_and_preprocess_input(X)
+		super().fit(X, y)
+
+	def fit_transform(self, X, y=None):
+		"""Fit to data, then transform it."""
+		self.fit(X, y)
+		return self.transform(X)
+
+	def inverse_transform(self, X):
+		"""Back-projection to the original space."""
+		X = core.check_and_preprocess_input(X)
+		X_index = X.index
+		X_columns = X.columns
+		result = super().inverse_transform(X)
+		return pd.DataFrame(result, index=X_index, columns=X_columns)
+
+	def transform(self, X):
+		"""Feature-wise transformation of the data."""
+		X = core.check_and_preprocess_input(X)
+		X_index = X.index
+		X_columns = X.columns
+		if not self.copy:
+			message = 'Alexander does not allow inplace scaling or normalization'
+			warnings.warn(message, UserWarning)
+		result = super().transform(X)
+		return pd.DataFrame(result, index=X_index, columns=X_columns)
+
+
+class StandardScaler(sklearn.preprocessing.StandardScaler):
+	"""Wrapper for sklearn.preprocessing.StandardScaler()."""
+
+	def fit(self, X, y=None):
+		"""Compute the quantiles used for transforming."""
+		X = core.check_and_preprocess_input(X)
+		super().fit(X, y)
+
+	def fit_transform(self, X, y=None):
+		"""Fit to data, then transform it."""
+		self.fit(X, y)
+		return self.transform(X)
+
+	def inverse_transform(self, X):
+		"""Back-projection to the original space."""
+		X = core.check_and_preprocess_input(X)
+		X_index = X.index
+		X_columns = X.columns
+		result = super().inverse_transform(X)
+		return pd.DataFrame(result, index=X_index, columns=X_columns)
+
+	def partial_fit(self, X, y=None):
+		"""Online computation of mean and std on X for later scaling."""
+		X = core.check_and_preprocess_input(X)
+		super().fit(X, y)
+
+	def transform(self, X):
+		"""Feature-wise transformation of the data."""
+		X = core.check_and_preprocess_input(X)
+		X_index = X.index
+		X_columns = X.columns
+		if not self.copy:
+			message = 'Alexander does not allow inplace scaling or normalization'
+			warnings.warn(message, UserWarning)
 		result = super().transform(X)
 		return pd.DataFrame(result, index=X_index, columns=X_columns)
 

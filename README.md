@@ -63,13 +63,15 @@ Please, refrain from using any module whose status is not either `Fully wrapped`
 
 ## sklearn.preprocessing
 
+Unless otherwise stated, the returned DataFrames have the same index and columns names as the input.
+
 ### Binarizer
 
 Done. It behaves as in scikit-learn except for the fact both transform() and fit_transform() return pd.DataFrame(). The returned DataFrame has the same index and columns names as the input. Note: even though fit() does not really do anything here, the input is still checked and an error is returned if X is not a Pandas object.
 
 ### FunctionTransformer
 
-Done. It behaves as in scikit-learn except for the fact that transform(), inverse_transform() and fit_transform() return pd.DataFrame(). The returned DataFrame has the same index and columns names as the input.
+Done. It behaves as in scikit-learn except for the fact that transform(), inverse_transform() and fit_transform() return pd.DataFrame().
 
 
 ### Imputer
@@ -111,6 +113,18 @@ Done. It behaves as in scikit-learn except for the fact both transform() and fit
 ### PolynomialFeatures
 
 Done. It behaves as in scikit-learn except for the fact both transform() and fit_transform() return pd.DataFrame(). Alexander uses get_feature_names() to get the right names for the DataFrame columns.
+
+### QuantileTransformer
+
+Done. It behaves as in scikit-learn except for the fact that transform(), inverse_transform() and fit_transform() return pd.DataFrame(). Note: Alexander does not allow inplace scaling or normalization, so parameter *copy* is de facto always set to True.
+
+### RobustScaler
+
+Done. It behaves as in scikit-learn except for the fact that transform(), inverse_transform() and fit_transform() return pd.DataFrame(). Note: Alexander does not allow inplace scaling or normalization, so parameter *copy* is de facto always set to True.
+
+### StandardScaler
+
+Done. It behaves as in scikit-learn except for the fact that transform(), inverse_transform() and fit_transform() return pd.DataFrame(). Note: Alexander does not allow inplace scaling or normalization, so parameter *copy* is de facto always set to True.
 
 # Notes
 
